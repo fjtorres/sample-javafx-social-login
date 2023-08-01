@@ -2,17 +2,17 @@ package com.github.fjtorres.samples.javafxsociallogin.auth;
 
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.restfb.DefaultFacebookClient;
+import com.restfb.FacebookClient;
 import com.restfb.Version;
 import com.restfb.scope.FacebookPermissions;
 import com.restfb.scope.ScopeBuilder;
 
-import java.awt.*;
 import java.io.IOException;
-import java.net.URI;
 
 public class FacebookService implements AuthService {
 
-    private static final String APP_ID = "5111783918918508";
+    private static final String APP_ID = System.getenv("FACEBOOK_APP_ID");
+    private static final String APP_SECRET = System.getenv("FACEBOOK_APP_SECRET");
 
     private final CustomLocalServerReceiver receiver;
     private final AuthorizationCodeInstalledApp.Browser browser;
@@ -33,7 +33,11 @@ public class FacebookService implements AuthService {
             String loadUrl = facebookClient.getLoginDialogUrl(APP_ID, redirectUri, scopes);
             browser.browse(loadUrl + "&display=popup&response_type=code");
 
-            return receiver.waitForCode();
+            String code = receiver.waitForCode();
+
+            FacebookClient.AccessToken token = facebookClient.obtainUserAccessToken(APP_ID, APP_SECRET, redirectUri, code);
+
+            return token.getAccessToken();
 
         } finally {
             receiver.stop();

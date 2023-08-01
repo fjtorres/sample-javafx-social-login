@@ -1,5 +1,12 @@
 # Sample JavaFX project to test social log in with different providers
 
+## Environment variables
+To be able to run the sample project you need to provide the following environment variables:
+- FACEBOOK_APP_ID
+- FACEBOOK_APP_SECRET
+- GOOGLE_APP_ID
+- GOOGLE_APP_SECRET
+
 ## Supported providers
 - Google
 - Facebook

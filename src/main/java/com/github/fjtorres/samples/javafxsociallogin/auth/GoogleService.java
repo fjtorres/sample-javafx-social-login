@@ -21,8 +21,8 @@ public class GoogleService implements AuthService {
     /** Global instance of the JSON factory. */
     static final JsonFactory JSON_FACTORY = new GsonFactory();
 
-    String API_KEY = "594235193214-dp2o9dj0ah6ehrqbjija02fis1bm6lfc.apps.googleusercontent.com";
-    String API_SECRET = "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";
+    private static final String APP_ID = System.getenv("GOOGLE_APP_ID");
+    private static final String APP_SECRET = System.getenv("GOOGLE_APP_SECRET");
 
     private final CustomLocalServerReceiver receiver;
     private final AuthorizationCodeInstalledApp.Browser browser;
@@ -41,8 +41,8 @@ public class GoogleService implements AuthService {
                         HTTP_TRANSPORT,
                         JSON_FACTORY,
                         new GenericUrl("https://oauth2.googleapis.com/token"),
-                        new ClientParametersAuthentication(API_KEY, API_SECRET),
-                        API_KEY,
+                        new ClientParametersAuthentication(APP_ID, APP_SECRET),
+                        APP_ID,
                         "https://accounts.google.com/o/oauth2/v2/auth")
                         .setScopes(Arrays.asList("https://www.googleapis.com/auth/userinfo.email"))
                         .build();

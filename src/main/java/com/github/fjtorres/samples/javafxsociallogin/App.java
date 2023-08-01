@@ -24,8 +24,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class App extends Application {
 
@@ -114,7 +112,7 @@ public class App extends Application {
 
         System.out.println("Trying to log in with " + type);
 
-        Supplier<Void> commonSteps = () -> {
+        Runnable commonSteps = () -> {
             loading.set(false);
 
             if (browser instanceof AuthBrowser) {
@@ -126,8 +124,6 @@ public class App extends Application {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
-            return null;
         };
 
         loginType.set(type);
@@ -135,18 +131,18 @@ public class App extends Application {
         task.setOnFailed(e -> {
             text.setText("Token cannot be loaded with " + loginType.get());
             e.getSource().getException().printStackTrace();
-            commonSteps.get();
+            commonSteps.run();
         });
         task.setOnSucceeded(e -> {
             text.setText((String)e.getSource().getValue());
-            commonSteps.get();
+            commonSteps.run();
         });
         task.setOnRunning(e -> {
             loading.set(true);
             text.setText("Loading new token with " + loginType.get());
         });
         task.setOnCancelled(e -> {
-            commonSteps.get();
+            commonSteps.run();
         });
 
         task.start();
