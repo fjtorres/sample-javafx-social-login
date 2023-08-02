@@ -4,14 +4,17 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.net.CookieHandler;
+import java.net.CookieManager;
 
 public class AuthBrowser implements AuthorizationCodeInstalledApp.Browser {
+
+    private static final CookieManager COOKIE_MANAGER = new CookieManager();
 
     private final EventHandler<WindowEvent> onClose;
     private Stage stage;
@@ -29,9 +32,14 @@ public class AuthBrowser implements AuthorizationCodeInstalledApp.Browser {
             stage = new Stage();
             stage.setOnCloseRequest(onClose);
 
+            if (CookieHandler.getDefault() == null) {
+                CookieHandler.setDefault(COOKIE_MANAGER);
+            }
+
+            COOKIE_MANAGER.getCookieStore().removeAll();
+
             final WebView browser = new WebView();
-            final WebEngine webEngine = browser.getEngine();
-            webEngine.load(url);
+            browser.getEngine().load(url);
 
             Scene scene = new Scene(browser);
             stage.setResizable(false);
